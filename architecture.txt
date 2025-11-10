@@ -1,0 +1,7 @@
+TwinAgents Cloud Run Architecture
+----------------------------------
+[User] → (HTTP POST /plan)
+      → [Planner-Service (Cloud Run)]
+            ↳ Publishes → [Pub/Sub Topic planner-to-executor]
+                              ↳ Push → [Executor-Service (Cloud Run)]
+                                         → Executes tasks → Cloud Logs

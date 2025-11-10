@@ -1,0 +1,29 @@
+### Submit plan to Planner
+POST {{PLANNER_URL}}/plan
+Content-Type: application/json
+
+{
+  "text": "Summarize last meeting and email attendees"
+}
+
+### Health check - Planner
+GET {{PLANNER_URL}}/health
+
+### Direct run-task to Executor (simulate Pub/Sub push envelope)
+POST {{EXECUTOR_URL}}/run-task
+Content-Type: application/json
+
+{
+  "message": {
+    "data": "{{BASE64_PLAN}}"
+  }
+}
+
+### Simple direct executor call (no envelope)
+POST {{EXECUTOR_URL}}/run-task
+Content-Type: application/json
+
+{
+  "plan_id": "manual-test-1",
+  "tasks": [{"id":"t1","type":"log","text":"hello from REST client"}]
+}
