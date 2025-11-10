@@ -1,5 +1,6 @@
 fastapi
 uvicorn[standard]
 google-cloud-pubsub
+google-cloud-firestore
 python-dotenv
 requests
