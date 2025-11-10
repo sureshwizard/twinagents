@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TwinAgents Playground</title>
+<style>
+body{font-family:Inter,Arial;margin:2rem;background:#f9fafb;color:#111}
+.container{max-width:600px;margin:auto;padding:2rem;background:white;border-radius:1rem;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
+input,button,textarea{width:100%;padding:0.8rem;margin-top:0.5rem;border:1px solid #ccc;border-radius:0.5rem;font-size:1rem}
+button{background:#4285f4;color:white;cursor:pointer}
+pre{background:#f4f4f4;padding:1rem;border-radius:0.5rem;overflow:auto;margin-top:1rem}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🧠 TwinAgents Playground</h1>
+<p>Enter a task for Planner. It will publish a plan to Pub/Sub and the Executor will process it.</p>
+<textarea id="task" rows="3" placeholder="e.g., Summarize last meeting and email attendees"></textarea>
+<button onclick="submitTask()">Send to Planner</button>
+<pre id="output">Response will appear here...</pre>
+</div>
+<script>
+const plannerUrl = "https://planner-service-j36k2dhiga-ez.a.run.app/plan"; // live URL
+
+async function submitTask(){
+  const task = document.getElementById('task').value;
+  const out = document.getElementById('output');
+  out.textContent = "Sending...";
+  try {
+    const res = await fetch(plannerUrl, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ text: task })
+    });
+    const data = await res.json();
+    out.textContent = JSON.stringify(data, null, 2);
+  } catch (err) {
+    out.textContent = "Error: " + err;
+  }
+}
+</script>
+</body>
+</html>
