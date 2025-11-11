@@ -1,0 +1,36 @@
+🏗️ Architecture Components
+Component	Description
+1️⃣ Playground (Frontend)	A simple web UI built with HTML/JS and hosted on GitHub Pages. Users enter meeting summaries or instructions.
+2️⃣ Planner Agent (Backend)	FastAPI app on Google Cloud Run. Receives meeting text, uses Gemini API to refine tasks, and creates structured JSON plans. Publishes to Pub/Sub and stores them in Firestore.
+3️⃣ Pub/Sub Topic (planner-to-executor)	Asynchronous message bus between Planner and Executor. Provides decoupled, scalable event flow.
+4️⃣ Firestore (plans collection)	Stores structured task plans with metadata (plan_id, timestamp, actions).
+5️⃣ Executor Agent	(Planned next stage) Another Cloud Run service that subscribes to Pub/Sub messages and executes tasks, e.g., sending emails or creating reports.
+6️⃣ Cloud Build & Container Registry	Handles Docker image builds and deployment automation.
+7️⃣ Gemini API	Enhances meeting text understanding and produces refined summaries or structured JSON.
+
+          ┌──────────────────────┐
+          │  GitHub Pages        │
+          │  Playground UI       │
+          │ (HTML / JS)          │
+          └────────┬─────────────┘
+                   │ 1. POST /plan
+                   ▼
+        ┌──────────────────────────┐
+        │  Planner Agent (FastAPI) │
+        │  Cloud Run Service       │
+        │  - Calls Gemini API      │
+        │  - Publishes to Pub/Sub  │
+        │  - Stores in Firestore   │
+        └────────┬────────┬─────────
+                 │4. Pub/Sub Event
+                 │
+        ┌────────▼────────┐             ┌────────────────┐
+        │  Pub/Sub Topic  │──────▶     │ Executor Agent  │
+        │ planner-to-exec │             │ (Cloud Run)     │
+        └─────────────────┘             └────────────────┘
+                 │
+                 ▼
+        ┌─────────────────────────┐
+        │  Firestore Database     │
+        │  Collection: plans      │
+        └─────────────────────────┘
