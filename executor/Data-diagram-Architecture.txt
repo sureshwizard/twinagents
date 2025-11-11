@@ -1,0 +1,26 @@
+          ┌──────────────────────┐
+          │  GitHub Pages        │
+          │  Playground UI       │
+          │ (HTML / JS)          │
+          └────────┬─────────────┘
+                   │ 1. POST /plan
+                   ▼
+        ┌──────────────────────────┐
+        │  Planner Agent (FastAPI) │
+        │  Cloud Run Service       │
+        │  - Calls Gemini API      │
+        │  - Publishes to Pub/Sub  │
+        │  - Stores in Firestore   │
+        └────────┬────────┬─────────
+                 │4. Pub/Sub Event
+                 │
+        ┌────────▼────────┐             ┌────────────────┐
+        │  Pub/Sub Topic  │──────▶     │ Executor Agent  │
+        │ planner-to-exec │             │ (Cloud Run)     │
+        └─────────────────┘             └────────────────┘
+                 │
+                 ▼
+        ┌─────────────────────────┐
+        │  Firestore Database     │
+        │  Collection: plans      │
+        └─────────────────────────┘
